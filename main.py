@@ -16,6 +16,22 @@ class NoOpEvolutionModel:
   def evolve(self, cellState, neighbourCount):
       return cellState
 
+class HighLifeEvolutionModel:
+  def evolve(self, cellState, neighbourCount):
+    if cellState == CellularGrid.ALIVE and neighbourCount < 2:
+      return CellularGrid.DEAD  # DIE FOR UNDERPOPULATION
+    elif cellState == CellularGrid.ALIVE and (neighbourCount == 2 or neighbourCount == 3):
+      return CellularGrid.ALIVE # LIVES TO THE NEXT GENERATION
+    elif cellState == CellularGrid.ALIVE and neighbourCount > 3:
+      return CellularGrid.DEAD  # DIE FOR OVERPOPULATION
+    elif cellState == CellularGrid.DEAD and neighbourCount == 3:
+      return CellularGrid.ALIVE # REPRODUCTION
+    elif cellState == CellularGrid.DEAD and neighbourCount == 6:
+      return CellularGrid.ALIVE # ADDITIONAL REPRODUCTION - for replicator pattern
+    return cellState
+
+
+
 class Controller:
   #
   # Patterns
@@ -37,12 +53,17 @@ class Controller:
                       [7,37], [11,37], [4,40], [5,40], [7,40], [11,40], [13,40], [14,40], [5,41], [6,41],
                       [7,41], [11,41], [12,41], [13,41], [6,42], [12,42], [3,49], [4,49], [14,49], [15,49],
                       [4,50], [14,50], [1,51], [2,51], [3,51], [15,51], [16,51], [17,51], [1,52], [17,52]]
+  PT_REPLICATOR    = [[0, 3], [0, 4], [0, 5],
+                      [1, 2], [1, 5],
+                      [2, 1], [2, 5],
+                      [3, 1], [3, 4],
+                      [4, 1], [4, 2], [4, 3]]
 
   #
   # Use this method to init your variables
   #
   def init(self, grid):
-    self.scene = [Controller.PT_GLIDER, Controller.PT_TRIO, Controller.PT_PULSAR, Controller.PT_GOSPEL, Controller.PT_PERIOD]
+    self.scene = [Controller.PT_REPLICATOR, Controller.PT_GLIDER, Controller.PT_TRIO, Controller.PT_PULSAR, Controller.PT_GOSPEL, Controller.PT_PERIOD]
     # display first pattern at startup
     self.index = 0
     self.__setPattern(grid)
@@ -64,5 +85,6 @@ class Controller:
 if __name__ == "__main__":
   scale = 5  # Each pixel in the grid will be 20 x 20 screen pixels
   fps   = 300 # FRAME RATE (the loop method inside the controller will be called each 1/FPS seconds)
-  CellularGrid(Controller(), GOLEvolutionModel(), scale, fps)
+  #CellularGrid(Controller(), GOLEvolutionModel(), scale, fps)
   #CellularGrid(Controller(), NoOpEvolutionModel(), scale, fps)
+  CellularGrid(Controller(), HighLifeEvolutionModel(), scale, fps)
