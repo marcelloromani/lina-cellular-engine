@@ -12,6 +12,11 @@ import copy
 import json
 
 
+class CellState:
+    ALIVE = 1
+    DEAD  = 0
+
+
 class NoOpEvolutionModel:
   def evolve(self, cellState, neighbourCount):
       return cellState
@@ -25,31 +30,26 @@ class GOLEvolutionModel:
   #
   # Implements the GOL evolution model
   #
-  def evolve(self, cellState, neighbourCount):
+  @staticmethod
+  def evolve(cellState, neighbourCount):
     """
     This method implements the evolution rules
     It returns the new cell state ALIVE or DEAD
     """
-    if cellState == CellularGrid.ALIVE and neighbourCount < 2:
-      return CellularGrid.DEAD  # DIE FOR UNDERPOPULATION
-    elif cellState == CellularGrid.ALIVE and (neighbourCount == 2 or neighbourCount == 3):
-      return CellularGrid.ALIVE # LIVES TO THE NEXT GENERATION
-    elif cellState == CellularGrid.ALIVE and neighbourCount > 3:
-      return CellularGrid.DEAD  # DIE FOR OVERPOPULATION
-    elif cellState == CellularGrid.DEAD and neighbourCount == 3:
-      return CellularGrid.ALIVE # REPRODUCTION
+    if cellState == CellState.ALIVE and neighbourCount < 2:
+      return CellState.DEAD  # DIE FOR UNDERPOPULATION
+    elif cellState == CellState.ALIVE and (neighbourCount == 2 or neighbourCount == 3):
+      return CellState.ALIVE # LIVES TO THE NEXT GENERATION
+    elif cellState == CellState.ALIVE and neighbourCount > 3:
+      return CellState.DEAD  # DIE FOR OVERPOPULATION
+    elif cellState == CellState.DEAD and neighbourCount == 3:
+      return CellState.ALIVE # REPRODUCTION
     return cellState
 
 class CellularGrid:
   """
   Describes the cellular logic.
   """
-
-  #
-  # Constaints
-  #
-  ALIVE = 1 # PIXEL STATE ALIVE
-  DEAD  = 0 # PIXEL STATE DEAD
 
   def __init__(self, controller, model, scale, fps):
     """
