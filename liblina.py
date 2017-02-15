@@ -18,7 +18,8 @@ class CellState:
 
 
 class NoOpEvolutionModel:
-  def evolve(self, cellState, neighbourCount):
+  @staticmethod
+  def evolve(cellState, neighbourCount):
       return cellState
 
 

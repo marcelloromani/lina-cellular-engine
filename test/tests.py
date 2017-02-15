@@ -1,5 +1,5 @@
 import unittest
-from liblina import CellState, GOLEvolutionModel
+from liblina import CellState, GOLEvolutionModel, NoOpEvolutionModel
 
 class GOLModelTests(unittest.TestCase):
 
@@ -29,6 +29,15 @@ class GOLModelTests(unittest.TestCase):
         Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
         """
         self.assertEqual(GOLEvolutionModel.evolve(CellState.DEAD, 3), CellState.ALIVE)
+
+
+class NoOpModelTests(unittest.TestCase):
+    def test_same_status(self):
+        for neighbourCount in range(0, 10):
+            self.assertEqual(NoOpEvolutionModel.evolve(CellState.ALIVE, neighbourCount), CellState.ALIVE)
+            self.assertEqual(NoOpEvolutionModel.evolve(CellState.DEAD, neighbourCount), CellState.DEAD)
+
+
 
 def main():
     unittest.main()
